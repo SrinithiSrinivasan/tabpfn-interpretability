@@ -10,12 +10,6 @@ We introduce two interpretability metrics:
 
 Using targeted head ablations across multiple sklearn datasets, we show that high-CAS and high-FSS heads are causally important for model performance. Across both architectures, our results suggest that tabular foundation models develop specialized retrieval and feature-selection circuits that support in-context learning.
 
-$$
-\text{FSS}(h) \;=\; 1 \;-\; \frac{H(\text{col\_profile}_h)}{\log C}
-$$
-
-- $\text{FSS} = 0$ → uniform / diffuse mixer
-- $\text{FSS} = 1$ → all attention mass on a single column
 
 ## Layout
 
