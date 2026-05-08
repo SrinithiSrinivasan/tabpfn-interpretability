@@ -22,3 +22,5 @@ Thumbs.db
 .vscode/
 .idea/
 datapoint_attention/results/
+datapoint_attention/attn_cache/
+datapoint_attention/figures/

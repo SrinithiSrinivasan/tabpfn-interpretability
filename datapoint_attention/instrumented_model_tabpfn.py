@@ -46,10 +46,6 @@ import torch
 MaskKey = Tuple[int, int, str]
 
 
-# ---------------------------------------------------------------------------
-# Shared state
-# ---------------------------------------------------------------------------
-
 class _InstrState:
     def __init__(self):
         self.capture: bool = False
@@ -58,11 +54,6 @@ class _InstrState:
         }
         # masks_by_layer[(layer_idx, attn_type)] = set of head indices to zero
         self.masks_by_layer: Dict[Tuple[int, str], set] = {}
-
-
-# ---------------------------------------------------------------------------
-# Manual attention helpers (replaces flash-attn path so we get weights)
-# ---------------------------------------------------------------------------
 
 def _manual_attn(
     q: torch.Tensor,   # (B, S, H, D)
@@ -90,11 +81,6 @@ def _manual_attn(
             out[:, :, h, :] = 0.0
 
     return out, weights
-
-
-# ---------------------------------------------------------------------------
-# Patched forward factories
-# ---------------------------------------------------------------------------
 
 def _patched_row_forward_factory(state: _InstrState, layer_idx: int):
     """AlongRowAttention.forward replacement — captures feature attention."""
@@ -141,10 +127,6 @@ def _patched_col_forward_factory(state: _InstrState, layer_idx: int):
 
     return forward
 
-
-# ---------------------------------------------------------------------------
-# Main wrapper
-# ---------------------------------------------------------------------------
 
 class InstrumentedTabPFN:
     """Monkey-patches a fitted TabPFN v2 model for attention capture + ablation.

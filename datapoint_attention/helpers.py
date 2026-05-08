@@ -30,19 +30,6 @@ TABPFN_DATASETS = ["breast_cancer", "wine", "digits"]
 
 # ── Datasets ──────────────────────────────────────────────────────────────────
 
-def _fetch_openml_safe(name, version=1):
-    from sklearn.datasets import fetch_openml
-    try:
-        return fetch_openml(name, version=version, as_frame=False, parser="liac-arff")
-    except Exception:
-        orig = ssl._create_default_https_context
-        ssl._create_default_https_context = ssl._create_unverified_context
-        try:
-            return fetch_openml(name, version=version, as_frame=False, parser="liac-arff")
-        finally:
-            ssl._create_default_https_context = orig
-
-
 def load_dataset(name: str):
     """Returns (X: float32, y: int)."""
     if name == "breast_cancer":
@@ -117,10 +104,6 @@ def run_eval(backend, out_dir: Path) -> None:
 
         if nl is None:
             nl, nh = backend.n_layers, backend.n_heads
-
-        # Average over batch dimension (axis 0) before saving.
-        # Raw shape: feature (Br, H, C, C), datapoint (Bc, H, R, N)
-        # Saved shape: (H, C, C) and (H, R, N) — reduces 50GB to ~500MB.
         arrays = {f"{t}_attn_L{l}": np.ascontiguousarray(arr.mean(axis=0))
                   for t in ("feature", "datapoint")
                   for l, arr in cache[t].items()}
