@@ -21,3 +21,4 @@ figures/*.png
 Thumbs.db
 .vscode/
 .idea/
+datapoint_attention/results/
