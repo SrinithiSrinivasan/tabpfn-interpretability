@@ -29,6 +29,22 @@ Repo/
 │   ├── feature_head_scoring_multi_dataset.ipynb
 │   └── nanotabpfn_feature_head_scoring.ipynb
 └── figures/                     # PNGs written by the notebooks 
+|___datapoint_attention/
+   ├── run.py                                # Entry point — orchestrates all steps
+   ├── backends.py                           # Model loader for TabPFN and nanoTabPFN
+   ├── helpers.py                            # run_eval, run_plot, run_freeze_eval
+   ├── find_heads.py                         # Head selection by class-alignment score
+   ├── freeze_eval.py                        # Freezing + accuracy evaluation
+   ├── permutation_test.py                   # Statistical significance of head alignment
+   ├── class_align.py                        # Class-alignment metric computation
+   ├── model.py                              # Shared model utilities
+   ├── instrumented_model_tabpfn.py          # Forward hooks for TabPFN
+   ├── instrumented_model_nanotabpfn.py      # Forward hooks for nanoTabPFN
+   ├── results/{model}/
+      |__ all results
+   └── figures/{model}/
+      |── all figures
+
 ```
 
 ## Notebooks
@@ -79,6 +95,8 @@ its checkpoint is bundled in `checkpoints/`.
 
 ## Running
 
+
+### Feature Attention
 Open either notebook in Jupyter or VS Code and **Restart kernel → Run All**.
 Output PNGs in `figures/`:
 
@@ -92,13 +110,11 @@ Output PNGs in `figures/`:
 | nanoTabPFN | Top-3 / bottom-3 attention maps per dataset     | `nano_topbot_<dataset>.png` (×3)           |
 | nanoTabPFN | Single-head ablation drop heatmap               | `nano_single_head_ablation.png`            |
 
-## Reproducibility
+### Datapoint attention
 
-Seeds are fixed in both notebooks: `SEED = 0` for splits, model RNG, and
-`torch.manual_seed`; `SEED_PERM = 0` for the TabPFN v2 permutation test.
-With pinned dependency versions, the figures and printed numbers should
-match exactly across runs on the same hardware. Minor numerical drift
-(< 1e-4 in AUC) is possible across CPU vendors due to non-deterministic
-floating-point reductions in PyTorch.
+`python run.py --model tabpfn --step all`
+
+`python run.py --model nano --checkpoint path/to/model.pt --step all`
+
 
 
